@@ -1,43 +1,63 @@
 let userScore = 0;
 let compScore = 0;
 
+let msg = document.querySelector('#msg');
 const choices = document.querySelectorAll('.choice');
 
-const genCompChoice = () => {
-    let options = ["rock", "paper", "scissors"];
+const getCompChoice = () => {
+    let options = ["Rock", "Paper", "Scissors"];
     const randomNum = Math.floor(Math.random() * 3);
     return options[randomNum];
 };
+
+const updateScore = () => {
+    const user = document.querySelector('#user-score');
+    const comp = document.querySelector('#comp-score');
+    user.innerText = userScore;
+    comp.innerText = compScore;
+};
+
+const drawGame = () => {
+    msg.innerText = "Game was drawn! Play again!";
+    msg.style.backgroundColor = "rgb(3, 3, 45)";
+};
+const showWinner = (userWin, userChoice, compChoice) => {
+    if(userWin) {
+        userScore++;
+        msg.textContent = `You win! Your ${userChoice} beats ${compChoice}`;
+        msg.style.backgroundColor = "green";
+    } else {
+        compScore++;
+        msg.style.backgroundColor = "red";
+        msg.textContent = `You lose! Your ${userChoice} loses to ${compChoice}`;
+    }
+    updateScore();
+}
+
 const playGame = (userChoice) => {
     // console.log('user choice:', userChoice);
-    const compChoice = genCompChoice();
+    const compChoice = getCompChoice();
+    console.log(compChoice);
     if(userChoice === compChoice) {
-        console.log("It's a tie!");
-    }else if(userChoice==="rock" && compChoice==="scissors"){
-        userScore++;
-        console.log("You win! Rock beats Scissors");
-    }else if(userChoice==="paper" && compChoice==="rock"){
-        userScore++;
-        console.log("You win! Paper beats Rock");
-    }else if(userChoice==="scissors" && compChoice==="paper"){
-        userScore++;
-        console.log("You win! Scissors beats Paper");
-    }else if(userChoice==="rock" && compChoice==="paper"){
-        compScore++;
-        console.log("You lose! Paper beats Rock");
-    }else if(userChoice==="paper" && compChoice==="scissors"){
-        compScore++;
-        console.log("You lose! Scissors beats Paper");
-    }else if(userChoice==="scissors" && compChoice==="rock"){
-        compScore++;
-        console.log("You lose! Rock beats Scissors");
+        drawGame();
+    }else {
+        let userWin = true; 
+        if(userChoice === "Rock") {
+            userWin = compChoice === "Scissors";
+        } else if(userChoice === "Paper") {
+            userWin = compChoice === "Rock";
+        } else if(userChoice === "Scissors") {
+            userWin = compChoice === "Paper";
+        }
+        showWinner(userWin, userChoice, compChoice);
+        // console.log(`User Score: ${userScore}, Computer Score: ${compScore}`);  
     }
 };
 
 choices.forEach((choice) => {
     // console.log("successfully extracted choices");
     choice.addEventListener('click', () => { 
-        console.log(choice.id);
+        // console.log(choice.id);
         const userChoice = choice.id;
         playGame(userChoice);
     });
